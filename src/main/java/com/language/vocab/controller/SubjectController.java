@@ -1,6 +1,7 @@
 package com.language.vocab.controller;
 
 import com.language.vocab.model.Subject;
+import com.language.vocab.model.SubjectSummary;
 import com.language.vocab.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,11 @@ public class SubjectController {
 
     @Autowired
     private SubjectService subjectService;
+
+    @GetMapping("/getsubjectnames")
+    public List<SubjectSummary> getSubjectNames() {
+        return subjectService.getSubjectNames();
+    }
 
     @GetMapping("/getall")
     public List<Subject> getSubjects() {

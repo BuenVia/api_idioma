@@ -2,6 +2,7 @@ package com.language.vocab.service;
 
 import com.language.vocab.exception.ResourceNotFoundException;
 import com.language.vocab.model.Subject;
+import com.language.vocab.model.SubjectSummary;
 import com.language.vocab.repository.SubjectRespository;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,16 @@ public class SubjectService {
 
     public SubjectService(SubjectRespository subjectRespository) {
         this.subjectRespository = subjectRespository;
+    }
+
+    public List<SubjectSummary> getSubjectNames() {
+        return subjectRespository.findAll().
+                stream()
+                .map(subject -> new SubjectSummary(
+                        subject.getId(),
+                        subject.getSubjectName()
+                ))
+                .toList();
     }
 
     public List<Subject> getAllSubjects() {
