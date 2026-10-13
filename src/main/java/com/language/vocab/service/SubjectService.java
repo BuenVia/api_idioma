@@ -1,6 +1,8 @@
 package com.language.vocab.service;
 
 import com.language.vocab.exception.ResourceNotFoundException;
+import com.language.vocab.model.CreateSubject;
+import com.language.vocab.model.ReadSubject;
 import com.language.vocab.model.Subject;
 import com.language.vocab.model.SubjectSummary;
 import com.language.vocab.repository.SubjectRespository;
@@ -36,8 +38,18 @@ public class SubjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", id));
     }
 
-    public Subject createSubject(Subject subject) {
-        return subjectRespository.save(subject);
+    public ReadSubject createSubject(CreateSubject request) {
+
+        Subject subject = new Subject();
+        subject.setSubjectName(request.getSubjectName());
+
+        Subject savedSubject = subjectRespository.save(subject);
+
+        ReadSubject response = new ReadSubject();
+        response.setSubjectId(savedSubject.getId());
+        response.setSubjectName(savedSubject.getSubjectName());
+
+        return response;
     }
 
     public Subject updateSubject(Long id, Subject subject) {

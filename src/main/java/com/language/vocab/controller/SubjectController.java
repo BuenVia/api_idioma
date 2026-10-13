@@ -1,5 +1,7 @@
 package com.language.vocab.controller;
 
+import com.language.vocab.model.CreateSubject;
+import com.language.vocab.model.ReadSubject;
 import com.language.vocab.model.Subject;
 import com.language.vocab.model.SubjectSummary;
 import com.language.vocab.service.SubjectService;
@@ -31,8 +33,8 @@ public class SubjectController {
     }
 
     @PostMapping("/create")
-    public Subject createSubject(@RequestBody Subject subject) {
-        return subjectService.createSubject(subject);
+    public ReadSubject createSubject(@RequestBody CreateSubject createSubject) {
+        return subjectService.createSubject(createSubject);
     }
 
     @PutMapping("/update/{id}")
