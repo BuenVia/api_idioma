@@ -6,6 +6,7 @@ import com.language.vocab.model.Subject;
 import com.language.vocab.model.SubjectSummary;
 import com.language.vocab.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class SubjectController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteSubject(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteSubject(@PathVariable Long id) {
         return subjectService.deleteSubject(id);
     }
 

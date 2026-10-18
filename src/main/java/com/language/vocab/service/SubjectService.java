@@ -1,11 +1,10 @@
 package com.language.vocab.service;
 
 import com.language.vocab.exception.ResourceNotFoundException;
-import com.language.vocab.model.CreateSubject;
-import com.language.vocab.model.ReadSubject;
-import com.language.vocab.model.Subject;
-import com.language.vocab.model.SubjectSummary;
+import com.language.vocab.model.*;
 import com.language.vocab.repository.SubjectRespository;
+import com.language.vocab.repository.VocabRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +13,11 @@ import java.util.List;
 public class SubjectService {
 
     private final SubjectRespository subjectRespository;
+    private final VocabRepository vocabRepository;
 
-    public SubjectService(SubjectRespository subjectRespository) {
+    public SubjectService(SubjectRespository subjectRespository, VocabRepository vocabRepository) {
         this.subjectRespository = subjectRespository;
+        this.vocabRepository = vocabRepository;
     }
 
     public List<SubjectSummary> getSubjectNames() {
@@ -61,16 +62,24 @@ public class SubjectService {
         return subjectRespository.save(existingSubject);
     }
 
-    public String deleteSubject(Long id) {
+    public ResponseEntity<Void> deleteSubject(Long id) {
         Subject findSubject = new Subject();
         try {
+            // First delete all associated vocab
             findSubject = subjectRespository.findById(id)
                     .orElseThrow(() ->
                             new RuntimeException("Subject not found: " + id));
+
+            List<Vocab> findVocabs = vocabRepository.findBySubject(findSubject);
+            for (Vocab vocab : findVocabs) {
+                vocabRepository.deleteById(vocab.getId());
+            }
+
+            // Then delete the subject
             subjectRespository.deleteById(id);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            System.out.println("Error: " + e.getMessage());
         }
-        return "Successfully deleted subject: " + id + " " + findSubject.getSubjectName();
+        return ResponseEntity.noContent().build();
     }
 }
