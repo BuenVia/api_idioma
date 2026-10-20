@@ -1,9 +1,11 @@
 package com.language.vocab.controller;
 
 import com.language.vocab.model.Vocab;
+import com.language.vocab.model.VocabSummary;
 import com.language.vocab.repository.VocabRequest;
 import com.language.vocab.service.VocabService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class VocabController {
     }
 
     @GetMapping("/get/{id}")
-    public Vocab getVocab(@PathVariable Long id) {
+    public VocabSummary getVocab(@PathVariable Long id) {
         return vocabService.getVocab(id);
     }
 
@@ -39,13 +41,13 @@ public class VocabController {
     }
 
     @PutMapping("/update/{id}")
-    public Vocab updateVocab(@PathVariable Long id, @RequestBody Vocab vocab) {
+    public Vocab updateVocab(@PathVariable Long id, @RequestBody VocabSummary vocab) {
         return vocabService.updateVocab(id, vocab);
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteVocab(@PathVariable Long id) {
-        return vocabService.deleteVocab(id);
+    public ResponseEntity<Void> deleteVocab(@PathVariable Long id) {
+        return vocabService.deleteVocabById(id);
     }
 
 
