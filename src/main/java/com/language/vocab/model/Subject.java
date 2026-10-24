@@ -15,6 +15,16 @@ public class Subject {
     private String subjectName;
     @OneToMany(mappedBy = "subject")
     private List<Vocab> vocabs = new ArrayList<>();
+    @OneToOne(mappedBy = "subject")
+    private Note note;
+
+    public Note getNote() {
+        return note;
+    }
+
+    public void setNote(Note note) {
+        this.note = note;
+    }
 
     public Subject() {
     }

@@ -1,6 +1,6 @@
-package com.language.vocab.repository;
+package com.language.vocab.model;
 
-public class VocabRequest {
+public class CreateVocab {
 
     private String esp;
     private String eng;
