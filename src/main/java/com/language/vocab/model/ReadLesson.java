@@ -2,19 +2,19 @@ package com.language.vocab.model;
 
 import java.util.Date;
 
-public class ReadNote {
+public class ReadLesson {
 
-    private String noteTitle;
+    private String lessonTitle;
     private String body;
     private Date createdAt;
-    private Long noteId;
+    private Long lessonId;
 
-    public String getNoteTitle() {
-        return noteTitle;
+    public String getlessonTitle() {
+        return lessonTitle;
     }
 
-    public void setNoteTitle(String noteTitle) {
-        this.noteTitle = noteTitle;
+    public void setlessonTitle(String lessonTitle) {
+        this.lessonTitle = lessonTitle;
     }
 
     public String getBody() {
@@ -33,11 +33,11 @@ public class ReadNote {
         this.createdAt = createdAt;
     }
 
-    public Long getNoteId() {
-        return noteId;
+    public Long getlessonId() {
+        return lessonId;
     }
 
-    public void setNoteId(Long noteId) {
-        this.noteId = noteId;
+    public void setlessonId(Long lessonId) {
+        this.lessonId = lessonId;
     }
 }

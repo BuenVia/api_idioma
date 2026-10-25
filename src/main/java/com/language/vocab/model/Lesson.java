@@ -6,13 +6,13 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "note")
-public class Note {
+@Table(name = "lesson")
+public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String noteTitle;
+    private String lessonTitle;
     @OneToOne
     @JoinColumn(name = "subject_id")
     @JsonIgnore
@@ -20,7 +20,7 @@ public class Note {
     private String body;
     private Date createdAt = new Date();
 
-    public Note() {}
+    public Lesson() {}
 
     public Long getId() {
         return id;
@@ -30,12 +30,12 @@ public class Note {
         this.id = id;
     }
 
-    public String getNoteTitle() {
-        return noteTitle;
+    public String getLessonTitle() {
+        return lessonTitle;
     }
 
-    public void setNoteTitle(String noteTitle) {
-        this.noteTitle = noteTitle;
+    public void setLessonTitle(String lessonTitle) {
+        this.lessonTitle = lessonTitle;
     }
 
     public Subject getSubject() {

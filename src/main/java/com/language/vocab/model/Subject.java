@@ -16,14 +16,14 @@ public class Subject {
     @OneToMany(mappedBy = "subject")
     private List<Vocab> vocabs = new ArrayList<>();
     @OneToOne(mappedBy = "subject")
-    private Note note;
+    private Lesson lesson;
 
-    public Note getNote() {
-        return note;
+    public Lesson getLesson() {
+        return lesson;
     }
 
-    public void setNote(Note note) {
-        this.note = note;
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
     }
 
     public Subject() {

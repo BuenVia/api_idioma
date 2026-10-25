@@ -30,7 +30,8 @@ public class SubjectController {
 
     @GetMapping("/get/{id}")
     public Subject getSubject(@PathVariable Long id) {
-        return subjectService.getSubject(id);
+        Subject subject = subjectService.getSubject(id);
+        return subject;
     }
 
     @PostMapping("/create")
