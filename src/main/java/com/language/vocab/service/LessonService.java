@@ -63,6 +63,12 @@ public class LessonService {
         try {
             findLesson = lessonRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("lesson", id));
+
+            Subject subject = findLesson.getSubject();
+            if (subject != null) {
+                subject.setLesson(null);
+            }
+
             if(Objects.equals(findLesson.getId(), id)) {
                 lessonRepository.deleteById(id);
             }
