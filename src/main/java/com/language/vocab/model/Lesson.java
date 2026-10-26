@@ -12,7 +12,7 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String lessonTitle;
+    private String lessonTitle = "";
     @OneToOne
     @JoinColumn(name = "subject_id")
     @JsonIgnore

@@ -3,7 +3,7 @@ package com.language.vocab.model;
 public class LessonSummary {
 
     private Long id;
-    private String lessonTitle;
+    private String lessonTitle = "";
     private String body;
     private Long subjectId;
 
@@ -15,11 +15,11 @@ public class LessonSummary {
         this.id = id;
     }
 
-    public String getlessonTitle() {
+    public String getLessonTitle() {
         return lessonTitle;
     }
 
-    public void setlessonTitle(String lessonTitle) {
+    public void setLessonTitle(String lessonTitle) {
         this.lessonTitle = lessonTitle;
     }
 

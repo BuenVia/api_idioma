@@ -9,11 +9,11 @@ public class CreateLesson {
     private Long subjectId;
     private Date createdAt = new Date();
 
-    public String getlessonTitle() {
+    public String getLessonTitle() {
         return lessonTitle;
     }
 
-    public void setlessonTitle(String lessonTitle) {
+    public void setLessonTitle(String lessonTitle) {
         this.lessonTitle = lessonTitle;
     }
 

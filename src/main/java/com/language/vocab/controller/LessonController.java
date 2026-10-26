@@ -18,33 +18,33 @@ public class LessonController {
     }
 
     @GetMapping("/get/{id}")
-    public Lesson getlesson(@PathVariable Long id) {
-        return lessonService.getlessonById(id);
+    public LessonSummary getLesson(@PathVariable Long id) {
+        return lessonService.getLessonById(id);
     }
 
     @GetMapping("/getbysubject/{subjectId}")
-    public Lesson getlessonBySubject(@PathVariable Long subjectId) {
-        return lessonService.getlessonBySubjectId(subjectId);
+    public Lesson getLessonBySubject(@PathVariable Long subjectId) {
+        return lessonService.getLessonBySubjectId(subjectId);
     }
 
     @PostMapping("/create")
-    public Lesson createlesson(@RequestBody CreateLesson request) {
+    public Lesson createLesson(@RequestBody CreateLesson request) {
         Lesson lesson = new Lesson();
 
-        lesson.setLessonTitle(request.getlessonTitle());
+        lesson.setLessonTitle(request.getLessonTitle());
         lesson.setBody(request.getBody());
 
-        return lessonService.createlesson(lesson, request.getSubjectId());
+        return lessonService.createLesson(lesson, request.getSubjectId());
     }
 
     @PutMapping("/update/{id}")
-    public Lesson updatelesson(@PathVariable Long id, @RequestBody LessonSummary lessonSummary) {
-        return lessonService.updatelesson(id, lessonSummary);
+    public Lesson updateLesson(@PathVariable Long id, @RequestBody LessonSummary lessonSummary) {
+        return lessonService.updateLesson(id, lessonSummary);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deletelesson(@PathVariable Long id) {
-        return lessonService.deletelesson(id);
+    public ResponseEntity<Void> deleteLesson(@PathVariable Long id) {
+        return lessonService.deleteLesson(id);
     }
 
 }

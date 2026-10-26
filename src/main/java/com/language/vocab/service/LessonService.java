@@ -22,19 +22,26 @@ public class LessonService {
         this.subjectRespository = subjectRespository;
     }
 
-    public Lesson getlessonById(Long id) {
-        return lessonRepository.findById(id)
+    public LessonSummary getLessonById(Long id) {
+        Lesson findLesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("lesson", id));
+
+        LessonSummary lessonSummary = new LessonSummary();
+        lessonSummary.setId(findLesson.getId());
+        lessonSummary.setLessonTitle(findLesson.getLessonTitle());
+        lessonSummary.setBody(findLesson.getBody());
+        lessonSummary.setSubjectId(findLesson.getSubject().getId());
+        return lessonSummary;
     }
 
-    public Lesson getlessonBySubjectId(Long subjectId) {
+    public Lesson getLessonBySubjectId(Long subjectId) {
         Subject subject = subjectRespository.findById(subjectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", subjectId));
 
         return lessonRepository.findBySubject(subject);
     }
 
-    public Lesson createlesson(Lesson lesson, Long subjectId) {
+    public Lesson createLesson(Lesson lesson, Long subjectId) {
         Subject subject = subjectRespository.findById(subjectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", subjectId));
 
@@ -43,7 +50,7 @@ public class LessonService {
         return lessonRepository.save(lesson);
     }
 
-    public Lesson updatelesson(Long id, LessonSummary lessonSummary) {
+    public Lesson updateLesson(Long id, LessonSummary lessonSummary) {
         Lesson existingLesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("lesson", id));
 
@@ -51,13 +58,13 @@ public class LessonService {
                 .orElseThrow(() -> new ResourceNotFoundException("lesson", id));
 
         existingLesson.setSubject(subject);
-        existingLesson.setLessonTitle(lessonSummary.getlessonTitle());
+        existingLesson.setLessonTitle(lessonSummary.getLessonTitle());
         existingLesson.setBody(lessonSummary.getBody());
 
         return lessonRepository.save(existingLesson);
     }
 
-    public ResponseEntity<Void> deletelesson(Long id) {
+    public ResponseEntity<Void> deleteLesson(Long id) {
         Lesson findLesson = new Lesson();
 
         try {
