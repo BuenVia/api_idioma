@@ -1,8 +1,5 @@
 package com.language.vocab.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-
 public class VocabSummary {
 
     private Long id;

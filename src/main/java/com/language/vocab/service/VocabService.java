@@ -59,18 +59,18 @@ public class VocabService {
     }
 
     public Vocab updateVocab(Long id, VocabSummary vocab) {
-        Vocab existingSubject = vocabRepository.findById(id)
+        Vocab existingVocab = vocabRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vocab", id));
 
         // Get the Subject
 //        Subject subject = subjectRespository.findById(vocab.getSubjectId());
 
         Subject subject = subjectService.getSubject(vocab.getSubjectId());
-        existingSubject.setSubject(subject);
-        existingSubject.setEsp(vocab.getEsp());
-        existingSubject.setEng(vocab.getEng());
+        existingVocab.setSubject(subject);
+        existingVocab.setEsp(vocab.getEsp());
+        existingVocab.setEng(vocab.getEng());
 
-        return vocabRepository.save(existingSubject);
+        return vocabRepository.save(existingVocab);
     }
 
     public ResponseEntity<Void> deleteVocabById(Long id) {

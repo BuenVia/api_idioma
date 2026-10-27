@@ -2,7 +2,7 @@ package com.language.vocab.controller;
 
 import com.language.vocab.model.Vocab;
 import com.language.vocab.model.VocabSummary;
-import com.language.vocab.repository.VocabRequest;
+import com.language.vocab.model.CreateVocab;
 import com.language.vocab.service.VocabService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class VocabController {
     }
 
     @PostMapping("/create")
-    public Vocab createVocab(@RequestBody VocabRequest request) {
+    public Vocab createVocab(@RequestBody CreateVocab request) {
         Vocab vocab = new Vocab();
 
         vocab.setEsp(request.getEsp());

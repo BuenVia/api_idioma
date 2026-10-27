@@ -1,0 +1,23 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false"
+                   name="Language - Staging"
+                   type="SpringBootApplicationConfigurationType"
+                   factoryName="Spring Boot">
+
+        <module name="language" />
+
+        <option name="SPRING_BOOT_MAIN_CLASS"
+                value="com.language.LanguageApplication" />
+
+        <option name="ACTIVE_PROFILES" value="staging" />
+
+        <envs>
+            <env name="SPRING_PROFILES_ACTIVE" value="staging" />
+        </env>
+
+        <method v="2">
+            <option name="Make" enabled="true" />
+        </method>
+
+    </configuration>
+</component>
