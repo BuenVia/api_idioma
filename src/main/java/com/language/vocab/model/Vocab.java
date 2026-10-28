@@ -14,8 +14,8 @@ public class Vocab {
     @JoinColumn(name = "subject_id")
     @JsonIgnore
     private Subject subject;
-    private String esp;
-    private String eng;
+    private String term;
+    private String translation;
 
     public Vocab() {
     }
@@ -24,20 +24,20 @@ public class Vocab {
         return id;
     }
 
-    public String getEsp() {
-        return esp;
+    public String getTerm() {
+        return term;
     }
 
-    public void setEsp(String esp) {
-        this.esp = esp;
+    public void setTerm(String term) {
+        this.term = term;
     }
 
-    public String getEng() {
-        return eng;
+    public String getTranslation() {
+        return translation;
     }
 
-    public void setEng(String eng) {
-        this.eng = eng;
+    public void setTranslation(String translation) {
+        this.translation = translation;
     }
 
     public Subject getSubject() {

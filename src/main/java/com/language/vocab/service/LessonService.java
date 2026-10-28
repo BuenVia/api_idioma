@@ -1,6 +1,7 @@
 package com.language.vocab.service;
 
 import com.language.vocab.exception.ResourceNotFoundException;
+import com.language.vocab.model.Language;
 import com.language.vocab.model.Lesson;
 import com.language.vocab.model.LessonSummary;
 import com.language.vocab.model.Subject;
@@ -8,8 +9,6 @@ import com.language.vocab.repository.LessonRepository;
 import com.language.vocab.repository.SubjectRespository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 public class LessonService {
@@ -22,8 +21,8 @@ public class LessonService {
         this.subjectRespository = subjectRespository;
     }
 
-    public LessonSummary getLessonById(Long id) {
-        Lesson findLesson = lessonRepository.findById(id)
+    public LessonSummary getLessonById(Language language, Long id) {
+        Lesson findLesson = lessonRepository.findByIdAndSubjectLanguage(id, language)
                 .orElseThrow(() -> new ResourceNotFoundException("lesson", id));
 
         LessonSummary lessonSummary = new LessonSummary();
@@ -34,14 +33,14 @@ public class LessonService {
         return lessonSummary;
     }
 
-    public Lesson getLessonBySubjectId(Long subjectId) {
+    public Lesson getLessonBySubjectId(Language language, Long subjectId) {
         Subject subject = subjectRespository.findById(subjectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", subjectId));
 
         return lessonRepository.findBySubject(subject);
     }
 
-    public Lesson createLesson(Lesson lesson, Long subjectId) {
+    public Lesson createLesson(Language language, Lesson lesson, Long subjectId) {
         Subject subject = subjectRespository.findById(subjectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", subjectId));
 
@@ -50,8 +49,8 @@ public class LessonService {
         return lessonRepository.save(lesson);
     }
 
-    public Lesson updateLesson(Long id, LessonSummary lessonSummary) {
-        Lesson existingLesson = lessonRepository.findById(id)
+    public Lesson updateLesson(Language language, Long id, LessonSummary lessonSummary) {
+        Lesson existingLesson = lessonRepository.findByIdAndSubjectLanguage(id, language)
                 .orElseThrow(() -> new ResourceNotFoundException("lesson", id));
 
         Subject subject = subjectRespository.findById(lessonSummary.getSubjectId())
@@ -64,25 +63,16 @@ public class LessonService {
         return lessonRepository.save(existingLesson);
     }
 
-    public ResponseEntity<Void> deleteLesson(Long id) {
-        Lesson findLesson = new Lesson();
+    public ResponseEntity<Void> deleteLesson(Language language, Long id) {
+        Lesson findLesson = lessonRepository.findByIdAndSubjectLanguage(id, language)
+                .orElseThrow(() -> new ResourceNotFoundException("lesson", id));
 
-        try {
-            findLesson = lessonRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("lesson", id));
-
-            Subject subject = findLesson.getSubject();
-            if (subject != null) {
-                subject.setLesson(null);
-            }
-
-            if(Objects.equals(findLesson.getId(), id)) {
-                lessonRepository.deleteById(id);
-            }
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+        Subject subject = findLesson.getSubject();
+        if (subject != null) {
+            subject.setLesson(null);
         }
 
+        lessonRepository.delete(findLesson);
         return ResponseEntity.noContent().build();
     }
 

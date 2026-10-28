@@ -17,6 +17,9 @@ public class Subject {
     private List<Vocab> vocabs = new ArrayList<>();
     @OneToOne(mappedBy = "subject")
     private Lesson lesson;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Language language;
 
     public Lesson getLesson() {
         return lesson;
@@ -48,5 +51,13 @@ public class Subject {
     public void addVocab(Vocab vocab) {
         vocabs.add(vocab);
         vocab.setSubject(this);
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 }

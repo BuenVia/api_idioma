@@ -20,8 +20,8 @@ public class SubjectService {
         this.vocabRepository = vocabRepository;
     }
 
-    public List<SubjectSummary> getSubjectNames() {
-        return subjectRespository.findAll().
+    public List<SubjectSummary> getSubjectNames(Language language) {
+        return subjectRespository.findByLanguage(language).
                 stream()
                 .map(subject -> new SubjectSummary(
                         subject.getId(),
@@ -30,19 +30,20 @@ public class SubjectService {
                 .toList();
     }
 
-    public List<Subject> getAllSubjects() {
-        return subjectRespository.findAll();
+    public List<Subject> getAllSubjects(Language language) {
+        return subjectRespository.findByLanguage(language);
     }
 
-    public Subject getSubject(Long id) {
-        return subjectRespository.findById(id)
+    public Subject getSubject(Language language, Long id) {
+        return subjectRespository.findByIdAndLanguage(id, language)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", id));
     }
 
-    public ReadSubject createSubject(CreateSubject request) {
+    public ReadSubject createSubject(Language language, CreateSubject request) {
 
         Subject subject = new Subject();
         subject.setSubjectName(request.getSubjectName());
+        subject.setLanguage(language);
 
         Subject savedSubject = subjectRespository.save(subject);
 
@@ -53,8 +54,8 @@ public class SubjectService {
         return response;
     }
 
-    public Subject updateSubject(Long id, Subject subject) {
-        Subject existingSubject = subjectRespository.findById(id)
+    public Subject updateSubject(Language language, Long id, Subject subject) {
+        Subject existingSubject = subjectRespository.findByIdAndLanguage(id, language)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", id));
 
         existingSubject.setSubjectName(subject.getSubjectName());
@@ -62,24 +63,15 @@ public class SubjectService {
         return subjectRespository.save(existingSubject);
     }
 
-    public ResponseEntity<Void> deleteSubject(Long id) {
-        Subject findSubject = new Subject();
-        try {
-            // First delete all associated vocab
-            findSubject = subjectRespository.findById(id)
-                    .orElseThrow(() ->
-                            new RuntimeException("Subject not found: " + id));
+    public ResponseEntity<Void> deleteSubject(Language language, Long id) {
+        Subject findSubject = subjectRespository.findByIdAndLanguage(id, language)
+                .orElseThrow(() -> new ResourceNotFoundException("Subject", id));
 
-            List<Vocab> findVocabs = vocabRepository.findBySubject(findSubject);
-            for (Vocab vocab : findVocabs) {
-                vocabRepository.deleteById(vocab.getId());
-            }
+        // First delete all associated vocab
+        vocabRepository.deleteAll(vocabRepository.findBySubject(findSubject));
 
-            // Then delete the subject
-            subjectRespository.deleteById(id);
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+        // Then delete the subject
+        subjectRespository.delete(findSubject);
         return ResponseEntity.noContent().build();
     }
 }
