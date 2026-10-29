@@ -17,6 +17,7 @@ public class Lesson {
     @JoinColumn(name = "subject_id")
     @JsonIgnore
     private Subject subject;
+    @Column(columnDefinition = "TEXT")
     private String body;
     private Date createdAt = new Date();
 

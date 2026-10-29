@@ -38,8 +38,8 @@ public class SubjectController {
 
     @PutMapping("/update/{id}")
     public Subject updateSubject(
-            @PathVariable Language language, @PathVariable Long id, @RequestBody Subject subject) {
-        return subjectService.updateSubject(language, id, subject);
+            @PathVariable Language language, @PathVariable Long id, @RequestBody SubjectSummary subjectSummary) {
+        return subjectService.updateSubject(language, id, subjectSummary);
     }
 
     @DeleteMapping("/delete/{id}")

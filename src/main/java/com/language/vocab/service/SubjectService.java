@@ -2,8 +2,10 @@ package com.language.vocab.service;
 
 import com.language.vocab.exception.ResourceNotFoundException;
 import com.language.vocab.model.*;
+import com.language.vocab.repository.LessonRepository;
 import com.language.vocab.repository.SubjectRespository;
 import com.language.vocab.repository.VocabRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +16,12 @@ public class SubjectService {
 
     private final SubjectRespository subjectRespository;
     private final VocabRepository vocabRepository;
+    private final LessonRepository lessonRepository;
 
-    public SubjectService(SubjectRespository subjectRespository, VocabRepository vocabRepository) {
+    public SubjectService(SubjectRespository subjectRespository, VocabRepository vocabRepository, LessonRepository lessonRepository) {
         this.subjectRespository = subjectRespository;
         this.vocabRepository = vocabRepository;
+        this.lessonRepository = lessonRepository;
     }
 
     public List<SubjectSummary> getSubjectNames(Language language) {
@@ -54,15 +58,16 @@ public class SubjectService {
         return response;
     }
 
-    public Subject updateSubject(Language language, Long id, Subject subject) {
+    public Subject updateSubject(Language language, Long id, SubjectSummary subjectSummary) {
         Subject existingSubject = subjectRespository.findByIdAndLanguage(id, language)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", id));
 
-        existingSubject.setSubjectName(subject.getSubjectName());
+        existingSubject.setSubjectName(subjectSummary.getSubjectName());
 
         return subjectRespository.save(existingSubject);
     }
 
+    @Transactional
     public ResponseEntity<Void> deleteSubject(Language language, Long id) {
         Subject findSubject = subjectRespository.findByIdAndLanguage(id, language)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", id));
@@ -70,6 +75,16 @@ public class SubjectService {
         // First delete all associated vocab
         vocabRepository.deleteAll(vocabRepository.findBySubject(findSubject));
 
+        // Then delete the associated lesson
+        if (findSubject.getLesson() != null) {
+            Lesson findLesson = lessonRepository.findByIdAndSubjectLanguage(findSubject.getLesson().getId(), language)
+                    .orElseThrow(() -> new ResourceNotFoundException("lesson", id));
+            Subject subject = findLesson.getSubject();
+            if (subject != null) {
+                subject.setLesson(null);
+            }
+            lessonRepository.delete(findLesson);
+        }
         // Then delete the subject
         subjectRespository.delete(findSubject);
         return ResponseEntity.noContent().build();
