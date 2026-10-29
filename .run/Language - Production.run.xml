@@ -14,7 +14,7 @@
 
         <envs>
             <env name="SPRING_PROFILES_ACTIVE" value="production" />
-        </env>
+        </envs>
 
         <method v="2">
             <option name="Make" enabled="true" />

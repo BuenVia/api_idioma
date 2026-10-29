@@ -2,6 +2,7 @@ package com.language.vocab.service;
 
 
 import com.language.vocab.exception.ResourceNotFoundException;
+import com.language.vocab.model.Language;
 import com.language.vocab.model.Subject;
 import com.language.vocab.model.Vocab;
 import com.language.vocab.model.VocabSummary;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service("vocabService")
 public class VocabService {
@@ -26,31 +26,31 @@ public class VocabService {
         this.subjectService = subjectService;
     }
 
-    public List<Vocab> getAllVocab() {
-        return vocabRepository.findAll();
+    public List<Vocab> getAllVocab(Language language) {
+        return vocabRepository.findBySubjectLanguage(language);
     }
 
-    public VocabSummary getVocab(Long id) {
-         Vocab vocabResult = vocabRepository.findById(id)
+    public VocabSummary getVocab(Language language, Long id) {
+         Vocab vocabResult = vocabRepository.findByIdAndSubjectLanguage(id, language)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Subject", id));
 
         VocabSummary vocabSummary = new VocabSummary();
         vocabSummary.setId(vocabResult.getId());
-        vocabSummary.setEsp(vocabResult.getEsp());
-        vocabSummary.setEng(vocabResult.getEng());
+        vocabSummary.setTerm(vocabResult.getTerm());
+        vocabSummary.setTranslation(vocabResult.getTranslation());
         vocabSummary.setSubjectId(vocabResult.getSubject().getId());
 
          return vocabSummary;
 
     }
 
-    public List<Vocab> getAllVocabBySubject(Subject subject) {
+    public List<Vocab> getAllVocabBySubject(Language language, Subject subject) {
         return vocabRepository.findBySubject(subject);
     }
 
-    public Vocab createVocab(Vocab vocab, Long subjectId) {
-        Subject subject = subjectRespository.findById(subjectId)
+    public Vocab createVocab(Language language, Vocab vocab, Long subjectId) {
+        Subject subject = subjectRespository.findByIdAndLanguage(subjectId, language)
                 .orElseThrow(() -> new ResourceNotFoundException("Vocab", subjectId));
 
         vocab.setSubject(subject);
@@ -58,32 +58,26 @@ public class VocabService {
         return vocabRepository.save(vocab);
     }
 
-    public Vocab updateVocab(Long id, VocabSummary vocab) {
-        Vocab existingVocab = vocabRepository.findById(id)
+    public Vocab updateVocab(Language language, Long id, VocabSummary vocab) {
+        Vocab existingVocab = vocabRepository.findByIdAndSubjectLanguage(id, language)
                 .orElseThrow(() -> new ResourceNotFoundException("Vocab", id));
 
         // Get the Subject
 //        Subject subject = subjectRespository.findById(vocab.getSubjectId());
 
-        Subject subject = subjectService.getSubject(vocab.getSubjectId());
+        Subject subject = subjectService.getSubject(language, vocab.getSubjectId());
         existingVocab.setSubject(subject);
-        existingVocab.setEsp(vocab.getEsp());
-        existingVocab.setEng(vocab.getEng());
+        existingVocab.setTerm(vocab.getTerm());
+        existingVocab.setTranslation(vocab.getTranslation());
 
         return vocabRepository.save(existingVocab);
     }
 
-    public ResponseEntity<Void> deleteVocabById(Long id) {
-        Vocab findVocab = new Vocab();
-        try {
-            findVocab = vocabRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Vocab not found: " + id));
-            if (Objects.equals(findVocab.getId(), id)) {
-                vocabRepository.deleteById(id);
-            }
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+    public ResponseEntity<Void> deleteVocabById(Language language, Long id) {
+        Vocab findVocab = vocabRepository.findByIdAndSubjectLanguage(id, language)
+                .orElseThrow(() -> new ResourceNotFoundException("Vocab", id));
+
+        vocabRepository.delete(findVocab);
         return ResponseEntity.noContent().build();
     }
 

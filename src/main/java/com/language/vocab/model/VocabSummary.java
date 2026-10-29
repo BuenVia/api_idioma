@@ -4,8 +4,8 @@ public class VocabSummary {
 
     private Long id;
     private Long subjectId;
-    private String esp;
-    private String eng;
+    private String term;
+    private String translation;
 
     public Long getId() {
         return id;
@@ -23,19 +23,19 @@ public class VocabSummary {
         this.subjectId = subjectId;
     }
 
-    public String getEsp() {
-        return esp;
+    public String getTerm() {
+        return term;
     }
 
-    public void setEsp(String esp) {
-        this.esp = esp;
+    public void setTerm(String term) {
+        this.term = term;
     }
 
-    public String getEng() {
-        return eng;
+    public String getTranslation() {
+        return translation;
     }
 
-    public void setEng(String eng) {
-        this.eng = eng;
+    public void setTranslation(String translation) {
+        this.translation = translation;
     }
 }
