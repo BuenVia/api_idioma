@@ -1,8 +1,11 @@
 package com.language.subject.dto;
 
+import com.language.common.enums.Level;
+
 public class UpdateSubjectRequest {
 
     private String subjectName;
+    private Level level;
     private Long categoryId;
     private boolean removeCategory;
 
@@ -28,5 +31,13 @@ public class UpdateSubjectRequest {
 
     public void setRemoveCategory(boolean removeCategory) {
         this.removeCategory = removeCategory;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
     }
 }

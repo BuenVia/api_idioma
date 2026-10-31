@@ -44,6 +44,7 @@ public class SubjectService {
                 .map(subject -> new SubjectSummaryResponse(
                         subject.getId(),
                         subject.getSubjectName(),
+                        subject.getLevel(),
                         toCategorySummary(subject.getCategory())
                 ))
                 .toList();
@@ -59,10 +60,14 @@ public class SubjectService {
     }
 
     public SubjectResponse createSubject(Language language, CreateSubjectRequest request) {
+        if (request.getLevel() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "level is required");
+        }
 
         Subject subject = new Subject();
         subject.setSubjectName(request.getSubjectName());
         subject.setLanguage(language);
+        subject.setLevel(request.getLevel());
         if (request.getCategoryId() != null) {
             subject.setCategory(findCategory(language, request.getCategoryId()));
         }
@@ -72,6 +77,7 @@ public class SubjectService {
         SubjectResponse response = new SubjectResponse();
         response.setSubjectId(savedSubject.getId());
         response.setSubjectName(savedSubject.getSubjectName());
+        response.setLevel(savedSubject.getLevel());
         response.setCategory(toCategorySummary(savedSubject.getCategory()));
 
         return response;
@@ -87,6 +93,10 @@ public class SubjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", id));
 
         existingSubject.setSubjectName(updateSubjectRequest.getSubjectName());
+        // level omitted -> left unchanged
+        if (updateSubjectRequest.getLevel() != null) {
+            existingSubject.setLevel(updateSubjectRequest.getLevel());
+        }
 
         // categoryId omitted -> category left unchanged; removeCategory -> category cleared
         if (updateSubjectRequest.isRemoveCategory()) {
