@@ -1,5 +1,8 @@
 package com.language.subject.service;
 
+import com.language.category.dto.CategorySummaryResponse;
+import com.language.category.entity.Category;
+import com.language.category.repository.CategoryRepository;
 import com.language.common.enums.Language;
 import com.language.common.exception.ResourceNotFoundException;
 import com.language.lesson.entity.Lesson;
@@ -12,8 +15,10 @@ import com.language.lesson.repository.LessonRepository;
 import com.language.subject.repository.SubjectRepository;
 import com.language.vocab.repository.VocabRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,11 +28,14 @@ public class SubjectService {
     private final SubjectRepository subjectRepository;
     private final VocabRepository vocabRepository;
     private final LessonRepository lessonRepository;
+    private final CategoryRepository categoryRepository;
 
-    public SubjectService(SubjectRepository subjectRepository, VocabRepository vocabRepository, LessonRepository lessonRepository) {
+    public SubjectService(SubjectRepository subjectRepository, VocabRepository vocabRepository,
+            LessonRepository lessonRepository, CategoryRepository categoryRepository) {
         this.subjectRepository = subjectRepository;
         this.vocabRepository = vocabRepository;
         this.lessonRepository = lessonRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public List<SubjectSummaryResponse> getSubjectNames(Language language) {
@@ -35,7 +43,8 @@ public class SubjectService {
                 stream()
                 .map(subject -> new SubjectSummaryResponse(
                         subject.getId(),
-                        subject.getSubjectName()
+                        subject.getSubjectName(),
+                        toCategorySummary(subject.getCategory())
                 ))
                 .toList();
     }
@@ -54,21 +63,37 @@ public class SubjectService {
         Subject subject = new Subject();
         subject.setSubjectName(request.getSubjectName());
         subject.setLanguage(language);
+        if (request.getCategoryId() != null) {
+            subject.setCategory(findCategory(language, request.getCategoryId()));
+        }
 
         Subject savedSubject = subjectRepository.save(subject);
 
         SubjectResponse response = new SubjectResponse();
         response.setSubjectId(savedSubject.getId());
         response.setSubjectName(savedSubject.getSubjectName());
+        response.setCategory(toCategorySummary(savedSubject.getCategory()));
 
         return response;
     }
 
     public Subject updateSubject(Language language, Long id, UpdateSubjectRequest updateSubjectRequest) {
+        if (updateSubjectRequest.isRemoveCategory() && updateSubjectRequest.getCategoryId() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "categoryId and removeCategory cannot both be set");
+        }
+
         Subject existingSubject = subjectRepository.findByIdAndLanguage(id, language)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", id));
 
         existingSubject.setSubjectName(updateSubjectRequest.getSubjectName());
+
+        // categoryId omitted -> category left unchanged; removeCategory -> category cleared
+        if (updateSubjectRequest.isRemoveCategory()) {
+            existingSubject.setCategory(null);
+        } else if (updateSubjectRequest.getCategoryId() != null) {
+            existingSubject.setCategory(findCategory(language, updateSubjectRequest.getCategoryId()));
+        }
 
         return subjectRepository.save(existingSubject);
     }
@@ -94,5 +119,14 @@ public class SubjectService {
         // Then delete the subject
         subjectRepository.delete(findSubject);
         return ResponseEntity.noContent().build();
+    }
+
+    private Category findCategory(Language language, Long categoryId) {
+        return categoryRepository.findByIdAndLanguage(categoryId, language)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", categoryId));
+    }
+
+    private CategorySummaryResponse toCategorySummary(Category category) {
+        return category == null ? null : new CategorySummaryResponse(category.getId(), category.getCategoryName());
     }
 }
