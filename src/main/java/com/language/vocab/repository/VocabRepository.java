@@ -1,8 +1,8 @@
 package com.language.vocab.repository;
 
-import com.language.vocab.model.Language;
-import com.language.vocab.model.Subject;
-import com.language.vocab.model.Vocab;
+import com.language.common.enums.Language;
+import com.language.subject.entity.Subject;
+import com.language.vocab.entity.Vocab;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,9 +1,10 @@
 package com.language.vocab.controller;
 
-import com.language.vocab.model.Language;
-import com.language.vocab.model.Vocab;
-import com.language.vocab.model.VocabSummary;
-import com.language.vocab.model.CreateVocab;
+import com.language.common.enums.Language;
+import com.language.vocab.entity.Vocab;
+import com.language.vocab.dto.CreateVocabRequest;
+import com.language.vocab.dto.UpdateVocabRequest;
+import com.language.vocab.dto.VocabResponse;
 import com.language.vocab.service.VocabService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,12 @@ public class VocabController {
     }
 
     @GetMapping("/get/{id}")
-    public VocabSummary getVocab(@PathVariable Language language, @PathVariable Long id) {
+    public VocabResponse getVocab(@PathVariable Language language, @PathVariable Long id) {
         return vocabService.getVocab(language, id);
     }
 
     @PostMapping("/create")
-    public Vocab createVocab(@PathVariable Language language, @RequestBody CreateVocab request) {
+    public Vocab createVocab(@PathVariable Language language, @RequestBody CreateVocabRequest request) {
         Vocab vocab = new Vocab();
 
         vocab.setTerm(request.getTerm());
@@ -44,8 +45,8 @@ public class VocabController {
 
     @PutMapping("/update/{id}")
     public Vocab updateVocab(
-            @PathVariable Language language, @PathVariable Long id, @RequestBody VocabSummary vocab) {
-        return vocabService.updateVocab(language, id, vocab);
+            @PathVariable Language language, @PathVariable Long id, @RequestBody UpdateVocabRequest updateVocabRequest) {
+        return vocabService.updateVocab(language, id, updateVocabRequest);
     }
 
     @DeleteMapping("/delete/{id}")

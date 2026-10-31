@@ -33,3 +33,8 @@ build/
 .vscode/
 
 src/main/resources/application.properties
+
+CLAUDE.md
+docs/CODE_REVIEW.md
+FEATURE.md
+*.db
