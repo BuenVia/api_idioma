@@ -1,4 +1,4 @@
-HELP.md
+docs/HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -35,6 +35,5 @@ build/
 src/main/resources/application.properties
 
 CLAUDE.md
-docs/CODE_REVIEW.md
-FEATURE.md
+docs/*
 *.db

@@ -4,6 +4,7 @@ import com.language.common.enums.Language;
 import com.language.vocab.entity.Vocab;
 import com.language.vocab.dto.CreateVocabRequest;
 import com.language.vocab.dto.UpdateVocabRequest;
+import com.language.vocab.dto.VocabCategoryGroupResponse;
 import com.language.vocab.dto.VocabResponse;
 import com.language.vocab.service.VocabService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,11 @@ public class VocabController {
     @GetMapping("/getall")
     public List<Vocab> getVocabAll(@PathVariable Language language) {
         return vocabService.getAllVocab(language);
+    }
+
+    @GetMapping("/getallgrouped")
+    public List<VocabCategoryGroupResponse> getVocabAllGrouped(@PathVariable Language language) {
+        return vocabService.getAllVocabGrouped(language);
     }
 
     @GetMapping("/get/{id}")

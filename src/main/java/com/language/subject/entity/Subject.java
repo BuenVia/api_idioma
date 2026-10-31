@@ -1,6 +1,8 @@
 package com.language.subject.entity;
 
+import com.language.category.entity.Category;
 import com.language.common.enums.Language;
+import com.language.common.enums.Level;
 import com.language.lesson.entity.Lesson;
 import com.language.vocab.entity.Vocab;
 import jakarta.persistence.*;
@@ -23,6 +25,12 @@ public class Subject {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Language language;
+    // Nullable at the DB level so ddl-auto=update can add the column to existing rows.
+    @Enumerated(EnumType.STRING)
+    private Level level;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public Lesson getLesson() {
         return lesson;
@@ -62,5 +70,21 @@ public class Subject {
 
     public void setLanguage(Language language) {
         this.language = language;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

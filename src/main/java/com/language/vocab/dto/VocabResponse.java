@@ -1,11 +1,22 @@
 package com.language.vocab.dto;
 
+import com.language.common.enums.Level;
+
 public class VocabResponse {
 
     private Long id;
     private Long subjectId;
+    private Level level;
     private String term;
     private String translation;
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
 
     public Long getId() {
         return id;
