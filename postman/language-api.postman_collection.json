@@ -1,0 +1,722 @@
+{
+  "info": {
+    "name": "Language API",
+    "description": "Language-learning backend. All feature routes are under `/{language}` \u2014 set the `language` variable to `es` or `ca` (case-insensitive; anything else \u2192 400). Create requests store the new id in collection variables so later requests chain. See docs/API_REFERENCE.md.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get languages",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/languages",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "languages"
+          ]
+        },
+        "description": "Lists supported languages (not language-scoped). Returns `[{code, displayName}]`."
+      },
+      "response": []
+    },
+    {
+      "name": "Get levels",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/levels",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "levels"
+          ]
+        },
+        "description": "Lists the CEFR levels (not language-scoped). Returns `[{code, name}]`; send `code` (e.g. \"B2\") as `level` on subject create/update."
+      },
+      "response": []
+    },
+    {
+      "name": "Category",
+      "item": [
+        {
+          "name": "Get category names",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/category/getcategorynames",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "category",
+                "getcategorynames"
+              ]
+            },
+            "description": "All categories for the language: `[{id, categoryName}]`."
+          },
+          "response": []
+        },
+        {
+          "name": "Get category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/category/get/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "category",
+                "get",
+                "{{categoryId}}"
+              ]
+            },
+            "description": "A category with its subjects. 404 if not found in this language."
+          },
+          "response": []
+        },
+        {
+          "name": "Create category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/category/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "category",
+                "create"
+              ]
+            },
+            "description": "Creates a category. `categoryName` is required (omitting stores null). Saves the returned `id` to `{{categoryId}}`.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryName\": \"Food\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (json && json.id != null) pm.collectionVariables.set('categoryId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/category/update/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "category",
+                "update",
+                "{{categoryId}}"
+              ]
+            },
+            "description": "Renames a category. Not a partial update \u2014 always send `categoryName`.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryName\": \"Food & Drink\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subject",
+      "item": [
+        {
+          "name": "Get subject names",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/subject/getsubjectnames",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "subject",
+                "getsubjectnames"
+              ]
+            },
+            "description": "Summary list: `[{id, subjectName, level, category}]`."
+          },
+          "response": []
+        },
+        {
+          "name": "Get all subjects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/subject/getall",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "subject",
+                "getall"
+              ]
+            },
+            "description": "Full subject entities including vocab and lesson."
+          },
+          "response": []
+        },
+        {
+          "name": "Get subject",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/subject/get/{{subjectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "subject",
+                "get",
+                "{{subjectId}}"
+              ]
+            },
+            "description": "Full subject entity. 404 if not found in this language."
+          },
+          "response": []
+        },
+        {
+          "name": "Create subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/subject/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "subject",
+                "create"
+              ]
+            },
+            "description": "`subjectName` required. `level` required, one of A1, A2, B1, B2, C1, C2 (uppercase), otherwise 400. `categoryId` optional (omit or null for no category; must belong to the same language). Saves the returned `subjectId` to `{{subjectId}}`.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subjectName\": \"Food vocab\",\n  \"level\": \"B2\",\n  \"categoryId\": {{categoryId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (json && json.subjectId != null) pm.collectionVariables.set('subjectId', json.subjectId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update subject",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/subject/update/{{subjectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "subject",
+                "update",
+                "{{subjectId}}"
+              ]
+            },
+            "description": "`subjectName` is NOT partial \u2014 always send it. `level` optional (omit = unchanged). `categoryId` optional (omit = unchanged). `removeCategory: true` clears the category. Sending both `categoryId` and `removeCategory: true` \u2192 400.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subjectName\": \"Food vocab\",\n  \"level\": \"B1\",\n  \"categoryId\": {{categoryId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update subject (remove category)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/subject/update/{{subjectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "subject",
+                "update",
+                "{{subjectId}}"
+              ]
+            },
+            "description": "Clears the subject's category. Do not send `categoryId` with this.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subjectName\": \"Food vocab\",\n  \"removeCategory\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete subject",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/subject/delete/{{subjectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "subject",
+                "delete",
+                "{{subjectId}}"
+              ]
+            },
+            "description": "Deletes the subject plus its vocab and lesson."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Vocab",
+      "item": [
+        {
+          "name": "Get all vocab",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/vocab/getall",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "vocab",
+                "getall"
+              ]
+            },
+            "description": "All vocab entities for the language."
+          },
+          "response": []
+        },
+        {
+          "name": "Get all vocab grouped",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/vocab/getallgrouped",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "vocab",
+                "getallgrouped"
+              ]
+            },
+            "description": "Vocab grouped by category \u2192 subject. Sorted; uncategorised group (`categoryId: null`) last."
+          },
+          "response": []
+        },
+        {
+          "name": "Get vocab",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/vocab/get/{{vocabId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "vocab",
+                "get",
+                "{{vocabId}}"
+              ]
+            },
+            "description": "A single vocab entry, including its subject's `level`. 404 if not found in this language."
+          },
+          "response": []
+        },
+        {
+          "name": "Create vocab",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/vocab/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "vocab",
+                "create"
+              ]
+            },
+            "description": "All fields required. Saves the returned `id` to `{{vocabId}}`.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"term\": \"la manzana\",\n  \"translation\": \"the apple\",\n  \"subjectId\": {{subjectId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (json && json.id != null) pm.collectionVariables.set('vocabId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update vocab",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/vocab/update/{{vocabId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "vocab",
+                "update",
+                "{{vocabId}}"
+              ]
+            },
+            "description": "All fields required (not partial). `subjectId` moves the vocab; send the current one to keep it. Omitting it \u2192 404.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"term\": \"la manzana\",\n  \"translation\": \"the apple (fruit)\",\n  \"subjectId\": {{subjectId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete vocab",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/vocab/delete/{{vocabId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "vocab",
+                "delete",
+                "{{vocabId}}"
+              ]
+            },
+            "description": "Deletes a vocab entry."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Lesson",
+      "item": [
+        {
+          "name": "Get lesson",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/lesson/get/{{lessonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "lesson",
+                "get",
+                "{{lessonId}}"
+              ]
+            },
+            "description": "A lesson by id. 404 if not found in this language."
+          },
+          "response": []
+        },
+        {
+          "name": "Get lesson by subject",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/lesson/getbysubject/{{subjectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "lesson",
+                "getbysubject",
+                "{{subjectId}}"
+              ]
+            },
+            "description": "The lesson belonging to a subject."
+          },
+          "response": []
+        },
+        {
+          "name": "Create lesson",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/lesson/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "lesson",
+                "create"
+              ]
+            },
+            "description": "All fields required. A subject can only have one lesson \u2014 creating a second \u2192 500. Saves the returned `id` to `{{lessonId}}`.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lessonTitle\": \"Food basics\",\n  \"body\": \"Lesson content goes here.\",\n  \"subjectId\": {{subjectId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (json && json.id != null) pm.collectionVariables.set('lessonId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update lesson",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/lesson/update/{{lessonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "lesson",
+                "update",
+                "{{lessonId}}"
+              ]
+            },
+            "description": "All fields required (not partial). `subjectId` reassigns the lesson; send the current one to keep it.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lessonTitle\": \"Food basics (updated)\",\n  \"body\": \"Updated lesson content.\",\n  \"subjectId\": {{subjectId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete lesson",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{language}}/lesson/delete/{{lessonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "{{language}}",
+                "lesson",
+                "delete",
+                "{{lessonId}}"
+              ]
+            },
+            "description": "Deletes a lesson."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "language",
+      "value": "es"
+    },
+    {
+      "key": "categoryId",
+      "value": "1"
+    },
+    {
+      "key": "subjectId",
+      "value": "1"
+    },
+    {
+      "key": "vocabId",
+      "value": "1"
+    },
+    {
+      "key": "lessonId",
+      "value": "1"
+    }
+  ]
+}

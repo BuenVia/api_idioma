@@ -97,6 +97,7 @@ public class VocabService {
         vocabResponse.setTerm(vocabResult.getTerm());
         vocabResponse.setTranslation(vocabResult.getTranslation());
         vocabResponse.setSubjectId(vocabResult.getSubject().getId());
+        vocabResponse.setLevel(vocabResult.getSubject().getLevel());
 
          return vocabResponse;
 
